@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pmax 智能诊断专家 Pro</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --gradient-2: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-1);
+            padding: 24px 32px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .logo-text p {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .demo-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Main Layout */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 32px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .auto-calc {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .auto-calc-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 4px 0;
+        }
+
+        .auto-calc-label {
+            color: var(--text-muted);
+        }
+
+        .auto-calc-value {
+            color: var(--accent-primary);
+            font-weight: 600;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 32px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-primary);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            color: var(--text-muted);
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Content Area */
+        .content {
+            min-height: 500px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+            background: var(--bg-card);
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .empty-desc {
+            font-size: 14px;
+        }
+
+        /* Report Section */
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .report-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .report-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .badge-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .badge-high {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-medium {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .badge-good {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Campaign Card */
+        .campaign-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .campaign-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .campaign-header:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .campaign-name {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .campaign-age {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+        }
+
+        .campaign-metrics {
+            display: flex;
+            gap: 24px;
+        }
+
+        .metric-item {
+            text-align: right;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-good {
+            color: var(--success);
+        }
+
+        .metric-warning {
+            color: var(--warning);
+        }
+
+        .metric-danger {
+            color: var(--danger);
+        }
+
+        .campaign-body {
+            padding: 24px;
+        }
+
+        /* Issues List */
+        .issues-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .issue-item {
+            border-radius: 12px;
+            padding: 16px 20px;
+            border-left: 4px solid;
+        }
+
+        .issue-critical {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: var(--danger);
+        }
+
+        .issue-high {
+            background: rgba(245, 158, 11, 0.08);
+            border-left-color: var(--warning);
+        }
+
+        .issue-medium {
+            background: rgba(59, 130, 246, 0.08);
+            border-left-color: var(--info);
+        }
+
+        .issue-good {
+            background: rgba(16, 185, 129, 0.08);
+            border-left-color: var(--success);
+        }
+
+        .issue-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .issue-module {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .issue-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .issue-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            padding-left: 4px;
+            border-left: 2px solid var(--border-color);
+            margin-left: 4px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        .issue-diagnosis {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .issue-action {
+            font-size: 13px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .issue-action-icon {
+            color: var(--accent-primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* No Issues */
+        .no-issues {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-issues-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            color: var(--success);
+        }
+
+        .no-issues-text {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--success);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .sidebar {
+                order: 1;
+            }
+
+            .content {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+
+            .campaign-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .campaign-metrics {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .campaign-card {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Re-analyze Button */
+        .reanalyze-btn {
+            width: 100%;
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--accent-primary), #7c3aed);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .reanalyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .reanalyze-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .reanalyze-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.5;
+        }
+
+        .reanalyze-btn svg {
+            transition: transform 0.3s;
+        }
+
+        .reanalyze-btn:hover:not(:disabled) svg {
+            transform: rotate(180deg);
+        }
+
+        /* Trigger Conditions Styles */
+        .trigger-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .trigger-toggle {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--accent-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .trigger-toggle:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .chevron-icon {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s;
+            stroke-width: 2;
+        }
+
+        .trigger-toggle.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .trigger-details {
+            margin-top: 12px;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-primary);
+            display: none;
+        }
+
+        .trigger-details.show {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .trigger-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .trigger-conditions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .condition-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .condition-check {
+            color: var(--success);
+            font-weight: bold;
+            font-size: 14px;
+            min-width: 16px;
+        }
+
+        .condition-label {
+            flex: 1;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .condition-value {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            color: var(--text-primary);
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .decision-path {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .path-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .path-value {
+            color: var(--accent-primary);
+            font-weight: 600;
+            flex: 1;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <h1>Pmax 智能诊断专家 Pro</h1>
+                    <p>支持 CSV 数据导入 • 时序趋势分析 • 深度归因诊断</p>
+                </div>
+            </div>
+            <button class="demo-btn" onclick="loadDemoData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                加载演示数据
+            </button>
+        </div>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <!-- Config Card -->
+            <div class="card">
+                <div class="card-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path
+                            d="M12 1v6m0 6v6m11-7h-6m-6 0H1m19.07-7.07l-4.24 4.24m-5.66 5.66l-4.24 4.24m0-14.14l4.24 4.24m5.66 5.66l4.24 4.24">
+                        </path>
+                    </svg>
+                    1. 设定业务目标
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Target ROAS</label>
+                        <input type="number" class="form-input" id="targetRoas" value="4.0" step="0.1"
+                            onchange="updateConfig()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target CPA ($)</label>
+                        <input type="number" class="form-input" id="targetCpa" value="50" step="1"
+                            onchange="updateConfig()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Target AOV ($)</label>
+                        <input type="number" class="form-input" id="targetAov" value="150" step="10"
+                            onchange="updateConfig()">
+                    </div>
+                    <div class="auto-calc">
+                        <div class="auto-calc-row">
+                            <span class="auto-calc-label">Auto CPATC:</span>
+                            <span class="auto-calc-value" id="autoCpatc">$70</span>
+                        </div>
+                        <div class="auto-calc-row">
+                            <span class="auto-calc-label">Auto CPIC:</span>
+                            <span class="auto-calc-value" id="autoCpic">$70</span>
+                        </div>
+                    </div>
+                    <button class="reanalyze-btn" id="reanalyzeBtn" onclick="reDiagnose()" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                        重新诊断
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    2. 导入数据报表
+                </div>
+                <div class="card-body">
+                    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">拖拽 CSV 文件到此处</p>
+                        <p class="upload-hint">或点击选择文件</p>
+                    </div>
+                    <input type="file" class="file-input" id="fileInput" accept=".csv"
+                        onchange="handleFileUpload(event)">
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 12px; line-height: 1.5;">
+                        系统将自动合并同一 Campaign 的多天数据，并取最新日期作为诊断基准。
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <section class="content" id="content">
+            <div class="empty-state">
+                <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <p class="empty-title">请导入数据开始诊断</p>
+                <p class="empty-desc">支持 CSV 格式日报表</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ============================================
+        // 配置
+        // ============================================
+        let config = {
+            targetRoas: 4.0,
+            targetCpa: 50,
+            targetAov: 150,
+            targetCpatc: 70,
+            targetCpic: 70
+        };
+
+        function updateConfig() {
+            config.targetRoas = parseFloat(document.getElementById('targetRoas').value) || 4.0;
+            config.targetCpa = parseFloat(document.getElementById('targetCpa').value) || 50;
+            config.targetAov = parseFloat(document.getElementById('targetAov').value) || 150;
+
+            // 自动计算 CPATC/CPIC
+            config.targetCpatc = config.targetAov > 1000 ? 100 : 70;
+            config.targetCpic = config.targetAov > 1000 ? 100 : 70;
+
+            document.getElementById('autoCpatc').textContent = '$' + config.targetCpatc;
+            document.getElementById('autoCpic').textContent = '$' + config.targetCpic;
+        }
+
+        // ============================================
+        // 全局数据存储
+        // ============================================
+        let globalCampaignData = null; // 存储已处理的广告系列数据
+
+        // 重新诊断函数
+        function reDiagnose() {
+            if (!globalCampaignData) {
+                alert('请先导入数据');
+                return;
+            }
+
+            // 重新运行诊断
+            const results = [];
+            for (const campaignName in globalCampaignData) {
+                const historyData = globalCampaignData[campaignName];
+                const result = analyzeCampaign(historyData);
+                if (result) {
+                    results.push(result);
+                }
+            }
+
+            // 渲染结果
+            renderResults(results);
+        }
+
+        // ============================================
+        // 数据清洗函数
+        // ============================================
+        // ============================================
+        // 数据清洗函数
+        // ============================================
+        function cleanNumber(val) {
+            if (typeof val === 'number') return val;
+            if (!val) return 0;
+            let str = String(val).trim();
+
+            // 处理 "<10"
+            if (str.includes('<')) {
+                str = str.replace(/[^0-9.]/g, '');
+                return parseFloat(str) || 0;
+            }
+
+            // 移除 %, $, ", comma
+            // 注意：对于 97.60% 这种，去掉%后是 97.60。业务逻辑里使用 >50 判断，所以直接去 % 是对的。
+            // 对于 0.08% 这种，去掉%后是 0.08。业务逻辑 <0.5，也是对的。
+            str = str.replace(/[$,%"]/g, '').replace(/,/g, '');
+            const num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return new Date(0);
+            return new Date(dateStr);
+        }
+
+        // ============================================
+        // 辅助函数
+        // ============================================
+
+        // 计算环比变化百分比
+        function calculateChange(current, previous) {
+            if (!previous || previous === 0) return 0;
+            return (current - previous) / previous;
+        }
+
+        // 检测连续趋势 (返回 'up', 'down', 'stable')
+        function detectTrend(values, threshold = 0.1) {
+            if (values.length < 2) return 'stable';
+            let ups = 0, downs = 0;
+            for (let i = 1; i < values.length; i++) {
+                const change = calculateChange(values[i], values[i - 1]);
+                if (change > threshold) ups++;
+                else if (change < -threshold) downs++;
+            }
+            if (ups > downs) return 'up';
+            if (downs > ups) return 'down';
+            return 'stable';
+        }
+
+        // ============================================
+        // 触发条件相关函数
+        // ============================================
+
+        // 切换触发条件显示
+        function toggleTrigger(button) {
+            const details = button.nextElementSibling;
+            const isExpanded = details.classList.contains('show');
+
+            if (isExpanded) {
+                details.classList.remove('show');
+                button.classList.remove('expanded');
+                button.innerHTML = `
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    查看触发条件
+                `;
+            } else {
+                details.classList.add('show');
+                button.classList.add('expanded');
+                button.innerHTML = `
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    收起触发条件
+                `;
+            }
+        }
+
+        // 格式化数值
+        function formatValue(value, format) {
+            if (value === null || value === undefined) return 'N/A';
+            switch (format) {
+                case 'currency':
+                    return '$' + value.toFixed(2);
+                case 'percentage':
+                    return value.toFixed(2) + '%';
+                default:
+                    return value.toString();
+            }
+        }
+
+        // 渲染触发条件区块
+        function renderTriggerSection(issue) {
+            if (!issue.triggerConditions || issue.triggerConditions.length === 0) {
+                return '';
+            }
+
+            const conditionsHTML = issue.triggerConditions.map(cond => `
+                <div class="condition-item">
+                    <span class="condition-check">${cond.passed ? '✓' : '✗'}</span>
+                    <span class="condition-label">${cond.label}</span>
+                    <span class="condition-value">${formatValue(cond.actual, cond.format)} ${cond.operator} ${formatValue(cond.threshold, cond.format)}</span>
+                </div>
+            `).join('');
+
+            const decisionPathHTML = issue.decisionPath ? `
+                <div class="decision-path">
+                    <span class="path-label">判断路径:</span>
+                    <span class="path-value">${issue.decisionPath}</span>
+                </div>
+            ` : '';
+
+            return `
+                <div class="trigger-section">
+                    <button class="trigger-toggle" onclick="toggleTrigger(this)">
+                        <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        查看触发条件
+                    </button>
+                    <div class="trigger-details">
+                        <div class="trigger-header">📊 触发条件详情</div>
+                        <div class="trigger-conditions">
+                            ${conditionsHTML}
+                        </div>
+                        ${decisionPathHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split(/\r?\n/);
+            if (lines.length < 2) return [];
+
+            // 使用正则分割 CSV 行，正确处理引号内的逗号
+            // 匹配规则：逗号，后面跟着偶数个引号（表示我们在引号外）
+            const splitPattern = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
+
+            const headers = lines[0].split(splitPattern).map(h => h.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+            const rawData = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                // 跳过空行
+                if (!line) continue;
+
+                const values = line.split(splitPattern).map(v => v.trim().replace(/^"|"$/g, '').replace(/""/g, '"'));
+
+                // 允许一定的宽容度
+                if (values.length > 0) {
+                    const row = {};
+                    headers.forEach((h, idx) => {
+                        row[h] = values[idx] || '';
+                    });
+                    rawData.push(row);
+                }
+            }
+
+            return rawData;
+        }
+
+        // ============================================
+        // 核心诊断引擎
+        // ============================================
+        function analyzeCampaign(historyData) {
+            const issues = [];
+
+            if (!historyData || historyData.length === 0) {
+                return { data: {}, issues: [] };
+            }
+
+            const today = historyData[0];
+            const yesterday = historyData[1] || {};
+            const dayBefore = historyData[2] || {};
+
+            // 汇总多天数据以获得准确的总体指标
+            let totalCost = 0;
+            let totalConversions = 0;
+            let totalConvValue = 0;
+            let totalClicks = 0;
+            let totalImpressions = 0;
+            let totalAtc = 0;
+            let totalIc = 0;
+
+            historyData.forEach(row => {
+                totalCost += cleanNumber(row['Cost']);
+                totalConversions += cleanNumber(row['Purchase']);
+                totalConvValue += cleanNumber(row['销售额']);
+                totalClicks += cleanNumber(row['Clicks']);
+                totalImpressions += cleanNumber(row['Impr.']);
+                totalAtc += cleanNumber(row['ATC']);
+                totalIc += cleanNumber(row['IC']);
+            });
+
+            // 计算汇总后的指标
+            const aggregatedRoas = totalCost > 0 ? totalConvValue / totalCost : 0;
+            const aggregatedCpa = totalConversions > 0 ? totalCost / totalConversions : 0;
+            const aggregatedAov = totalConversions > 0 ? totalConvValue / totalConversions : 0;
+            const aggregatedCvr = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
+            const aggregatedCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+
+            // 提取并清洗数据 - 使用汇总数据作为主要指标
+            const data = {
+                name: today['Campaign'] || 'Unknown',
+                date: today['Day'],
+                age: calculateAge(today),
+                cost: totalCost,  // 使用汇总值
+                budget: cleanNumber(today['Budget']),
+                clicks: totalClicks,  // 使用汇总值
+                impressions: totalImpressions,  // 使用汇总值
+                conversions: totalConversions,  // 使用汇总值
+                convValue: totalConvValue,  // 使用汇总值
+                atc: totalAtc,  // 使用汇总值
+                ic: totalIc,  // 使用汇总值
+                cpm: cleanNumber(today['CPM']),  // 最新一天的CPM
+                cpc: cleanNumber(today['CPC']),  // 最新一天的CPC
+                ctr: aggregatedCtr,  // 使用汇总计算的CTR
+                cvr: aggregatedCvr,  // 使用汇总计算的CVR
+                roas: aggregatedRoas,  // 使用汇总计算的ROAS
+                cpa: aggregatedCpa,  // 使用汇总计算的CPA
+                aov: aggregatedAov,  // 使用汇总计算的AOV
+                displayVideoCostShare: cleanNumber(today['版位跑偏诊断（cost：display+video占比）']),
+                policyStatus: today['Policy Review Status'] || 'Eligible',
+                gmcStatus: today['GMC Status'] || 'Active',
+                assetStatus: today['Asset Approval Status'] || '',
+                // 历史对比数据
+                prevCpm: cleanNumber(yesterday['CPM']),
+                prevCtr: cleanNumber(yesterday['CTR']),
+                prevCost: cleanNumber(yesterday['Cost']),
+                prevIc: cleanNumber(yesterday['IC']),
+                yesterdayConversions: cleanNumber(yesterday['Purchase']),
+                dayBeforeYesterdayCpm: cleanNumber(dayBefore['CPM']),
+                dayBeforeYesterdayImpressions: cleanNumber(dayBefore['Impr.'])
+            };
+
+            // 辅助计算
+            const cpatc = data.atc > 0 ? data.cost / data.atc : 0;
+            const cpic = data.ic > 0 ? data.cost / data.ic : 0;
+            const benchmarkCpatc = config.targetCpatc;
+            const benchmarkCpic = config.targetCpic;
+
+            // 环比变化计算
+            const cpmChange = calculateChange(data.cpm, data.prevCpm);
+            const costChange = calculateChange(cleanNumber(today['Cost']), data.prevCost);
+            const cvrChange = calculateChange(data.cvr, cleanNumber(yesterday['CVR']));
+
+            // === 模块一：基建诊断 ===
+
+            // 1.1 审核状态检查 - 增强版 (检测消耗骤降)
+            if (data.policyStatus && (data.policyStatus.toLowerCase().includes('limit') || data.policyStatus.toLowerCase().includes('disapproved'))) {
+                // 检查是否伴随消耗骤降
+                const hasCostDrop = costChange < -0.4; // 40% 下降
+                issues.push({
+                    level: hasCostDrop ? 'CRITICAL' : 'HIGH',
+                    module: '基建诊断',
+                    title: hasCostDrop ? '素材/商品拒登 + 消耗骤降' : '素材/商品拒登风险',
+                    desc: `Policy Status: ${data.policyStatus}${hasCostDrop ? `, 消耗环比下降 ${Math.abs(costChange * 100).toFixed(0)}%` : ''}`,
+                    diagnosis: '存在违规或受限内容。' + (hasCostDrop ? '消耗骤降说明问题严重。' : ''),
+                    action: '根据拒绝原因(如:成人内容、虚假陈述、商标侵权)进行申诉或修改素材。'
+                });
+            }
+
+            // 1.2 GMC 状态
+            if (data.gmcStatus && data.gmcStatus.toLowerCase().includes('disapproved')) {
+                issues.push({
+                    level: 'CRITICAL',
+                    module: '基建诊断',
+                    title: 'GMC 账户异常',
+                    desc: `GMC Status: ${data.gmcStatus}`,
+                    diagnosis: '供血不足，商品被拒。',
+                    action: '修复 Merchant Center Feed。'
+                });
+            }
+
+            // === 模块二：广告诊断 ===
+            const isLearning = data.age <= 3;
+
+            if (isLearning) {
+                // === 学习期 (0-3天) ===
+
+                // 场景 A: 消耗过热
+                if (data.cost > data.budget * 1.2) {
+                    if (data.roas > config.targetRoas && data.cpa < config.targetCpa) {
+                        issues.push({
+                            level: 'GOOD',
+                            module: '学习期-预算',
+                            title: '消耗过热 - 良性',
+                            desc: `超预算 ${((data.cost / data.budget - 1) * 100).toFixed(0)}% 但效果佳`,
+                            diagnosis: '激进探索中，ROAS 和 CPA 均达标。',
+                            action: '不干预或加预算，让机器继续学习。'
+                        });
+                    } else {
+                        issues.push({
+                            level: 'MEDIUM',
+                            module: '学习期-预算',
+                            title: '消耗过热 - 需观察',
+                            desc: `超预算 >20%，Cost: $${data.cost.toFixed(2)}`,
+                            diagnosis: '正常波动，等待学习完成。',
+                            action: '观察至第4天再决定是否干预。'
+                        });
+                    }
+                }
+
+                // 场景 B: 消耗不足
+                if (data.cost < data.budget * 0.8) {
+                    if (data.cpa < config.targetCpa) {
+                        issues.push({
+                            level: 'MEDIUM',
+                            module: '学习期-预算',
+                            title: '消耗不足 - 保守',
+                            desc: `花不出钱且 CPA($${data.cpa.toFixed(2)}) 低于目标`,
+                            diagnosis: '出价过于保守，竞争不到流量。',
+                            action: '提预算或放宽 ROAS/CPA 限制。'
+                        });
+                    } else {
+                        issues.push({
+                            level: 'MEDIUM',
+                            module: '学习期-预算',
+                            title: '消耗不足 - 竞争力差',
+                            desc: '花不出钱且效果差',
+                            diagnosis: '竞争力不足，可能目标设定过于激进。',
+                            action: '降低 tROAS 目标 (如 4.0 → 3.5)。'
+                        });
+                    }
+                }
+
+                // 浅层交互异常: 有点击无加购
+                if (data.clicks > 100 && data.atc < 2) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '学习期-交互',
+                        title: '有点击无加购',
+                        desc: `Click: ${data.clicks}, ATC: ${data.atc}`,
+                        diagnosis: '素材误导 / 落地页体验差 / 价格无竞争力。',
+                        action: '1. 查 GMC 价格竞争力，优化落地页 CTA; 2. 换信号: 暂停宽泛的"兴趣"标签，改用更精准的"竞品词/核心词"作为 Search Themes; 3. 查落地页首屏是否清晰展示价格和 CTA 按钮。'
+                    });
+                }
+
+                // 中层交互异常: 加购与结账数据少 (Low ATC/Checkout & High CPA)
+                const hasHighCpatc = cpatc > benchmarkCpatc;
+                const hasHighCpic = cpic > benchmarkCpic;
+                const lowInteraction = data.cost > 200 && (data.atc + data.ic) < 3;
+
+                if ((hasHighCpatc && hasHighCpic) || lowInteraction) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '学习期-交互',
+                        title: '中层交互异常 (加购/结账成本高)',
+                        desc: `CPATC: $${cpatc.toFixed(2)} (基准: $${benchmarkCpatc}), CPIC: $${cpic.toFixed(2)} (基准: $${benchmarkCpic})`,
+                        diagnosis: '流量进来了，但全是"无效人群"(如对价格极度敏感，或误点)。可能是版位偏移或事件追踪问题。',
+                        action: '1. [Tech Check] 检查 Add to Cart 和 Begin Checkout 事件状态是否正常; 2. [Placement Scrub] 检查 Video/Display 版位的 CPA 是否远高于 Shopping 版位; 3. [Audience Tuning] 暂停宽泛 Interests，新增 High Intent 信号; 4. [Offer Check] 对比价格，检查是否处于非折扣期。',
+                        triggerConditions: [
+                            {
+                                label: 'CPATC > Benchmark',
+                                actual: cpatc,
+                                threshold: benchmarkCpatc,
+                                operator: '>',
+                                passed: hasHighCpatc,
+                                format: 'currency'
+                            },
+                            {
+                                label: 'CPIC > Benchmark',
+                                actual: cpic,
+                                threshold: benchmarkCpic,
+                                operator: '>',
+                                passed: hasHighCpic,
+                                format: 'currency'
+                            },
+                            {
+                                label: 'ATC + IC < 3 (Cost > $200)',
+                                actual: data.atc + data.ic,
+                                threshold: 3,
+                                operator: '<',
+                                passed: lowInteraction,
+                                format: 'number'
+                            }
+                        ],
+                        decisionPath: '学习期 → 中层交互检测 → 成本超标/低交互'
+                    });
+                }
+
+                // 深层交互异常: 高意向但零转化 (High Intent but Zero Conversion)
+                const highIntent = (data.atc + data.ic) > 5;
+                const zeroConversion = data.conversions === 0 && data.yesterdayConversions === 0;
+
+                if (highIntent && zeroConversion) {
+                    issues.push({
+                        level: 'CRITICAL',
+                        module: '学习期-交互',
+                        title: '深层交互异常 (高意向但零转化)',
+                        desc: `ATC + IC = ${data.atc + data.ic}，但连续 0 转化`,
+                        diagnosis: '用户都已经拿起商品走到收银台了，最后却放下走了。可能是支付坏了、运费惊吓、促销失效或竞品截胡。',
+                        action: '1. [P0级测试] 立即测试支付通道; 2. [Marketing] 检查广告素材与网站活动是否一致，优惠码是否有效; 3. [Ops] 快速查看核心竞品当前售价; 4. [Settings] 检查是否投到了不发货的偏远地区。',
+                        triggerConditions: [
+                            {
+                                label: 'ATC + IC > 5',
+                                actual: data.atc + data.ic,
+                                threshold: 5,
+                                operator: '>',
+                                passed: true,
+                                format: 'number'
+                            },
+                            {
+                                label: '连续 0 转化 (今天+昨天)',
+                                actual: data.conversions + data.yesterdayConversions,
+                                threshold: 0,
+                                operator: '=',
+                                passed: true,
+                                format: 'number'
+                            }
+                        ],
+                        decisionPath: '学习期 → 深层交互检测 → 高意向零转化'
+                    });
+                }
+
+                // 版位跑偏 (学习期)
+                if (data.displayVideoCostShare > 50) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '学习期-版位',
+                        title: '版位跑偏 (Display/Video > 50%)',
+                        desc: `Display+Video 消耗占比 ${data.displayVideoCostShare.toFixed(1)}%`,
+                        diagnosis: '偷懒式学习，跑向低效版位。',
+                        action: '1. 排除 App 类目; 2. 加竞品词 Search Themes; 3. 上传原生视频。'
+                    });
+                }
+
+            } else {
+                // === 稳定期 (4天+) ===
+
+                // 场景 A: 消耗过热
+                if (data.cost > data.budget * 1.2) {
+                    // 判断逻辑 1: 良性抢量
+                    const cvrStable = Math.abs(cvrChange) < 0.1; // CVR 变动幅度 < 10%
+                    const cpaGood = data.cpa < config.targetCpa * 1.2;
+
+                    if (cvrStable && cpaGood) {
+                        issues.push({
+                            level: 'GOOD',
+                            module: '稳定期-预算',
+                            title: '良性抢量 (Healthy Aggressive)',
+                            desc: `超预算 ${((data.cost / data.budget - 1) * 100).toFixed(0)}%，但 CVR 稳定且 CPA 达标`,
+                            diagnosis: '机器发现了高转化机会，正在积极扩量。虽然超预算，但每一分钱都花在了刀刃上。',
+                            action: '不干预 或 加预算。不要打断机器的兴奋状态。'
+                        });
+                    } else {
+                        // 判断逻辑 2: 恶性暴冲
+                        issues.push({
+                            level: 'HIGH',
+                            module: '稳定期-预算',
+                            title: '恶性暴冲',
+                            desc: `消耗激增但效果差 (CVR: ${data.cvr.toFixed(2)}%, CPA: $${data.cpa.toFixed(0)})`,
+                            diagnosis: '流量质量下降。机器可能跑到了昂贵但转化差的版位，或者是被低效的 Display 流量填充了预算。',
+                            action: '1. [控预算] 立即将预算回调; 2. [检查CPM] 重点检查 CPM 是否暴跌(垃圾流量)或 Search Terms 是否过于宽泛。',
+                            triggerConditions: [
+                                {
+                                    label: 'Cost > Budget × 1.2',
+                                    actual: data.cost,
+                                    threshold: data.budget * 1.2,
+                                    operator: '>',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'CVR < 0.5% 或 CPA 超标',
+                                    actual: data.cvr < 0.5 ? data.cvr : data.cpa,
+                                    threshold: data.cvr < 0.5 ? 0.5 : config.targetCpa * 1.2,
+                                    operator: '<',
+                                    passed: true,
+                                    format: data.cvr < 0.5 ? 'percentage' : 'currency'
+                                }
+                            ],
+                            decisionPath: '稳定期 → 消耗过热 → 恶性暴冲'
+                        });
+                    }
+                }
+
+                // 场景 B: 消耗不足
+                if (data.cost < data.budget * 0.8) {
+                    // 判断逻辑 1: 高效率 (High Efficiency)
+                    const highRoas = data.roas > 5.0;
+                    const lowCpic = cpic < benchmarkCpic;
+
+                    if (highRoas || lowCpic) {
+                        issues.push({
+                            level: 'MEDIUM',
+                            module: '稳定期-预算',
+                            title: '消耗不足 - 高效率',
+                            desc: `消耗仅达预算 ${((data.cost / data.budget) * 100).toFixed(0)}%, ROAS: ${data.roas.toFixed(2)}`,
+                            diagnosis: '预算撞线机会。转化效果极好(结账成本很低)，但可能受限于 tROAS 目标设得太高(如 600%)，导致机器不敢放开手脚出价。',
+                            action: '1. [加预算] 拉高 30% 预算刺激消耗; 2. [降门槛] 适当降低 tROAS 目标(如 500% → 450%)，用稍微低一点的效率换取更多的单量。'
+                        });
+                    } else if (data.roas < 4.0 && (cpic > benchmarkCpic || data.atc === 0)) {
+                        // 判断逻辑 2: 低效能 (Low Efficiency)
+                        issues.push({
+                            level: 'HIGH',
+                            module: '稳定期-预算',
+                            title: '消耗不足 - 低效能',
+                            desc: `消耗仅达预算 ${((data.cost / data.budget) * 100).toFixed(0)}%, ROAS: ${data.roas.toFixed(2)}, CPIC 高于基准`,
+                            diagnosis: '"有价无市"。虽然没花完钱，但已经很贵了。说明素材点击率太低(跑不出量)或者产品缺乏竞争力(用户看了不加购)。',
+                            action: '1. 检查素材 CTR 是否 < 0.8%? → 换素材; 2. 检查是否有 ATC 但无 Purchase? → 查价格/运费。'
+                        });
+                    }
+                }
+
+                // CVR 异常 - 虚假繁荣
+                const cpmDrop = data.prevCpm > 0 ? (data.cpm - data.prevCpm) / data.prevCpm : 0;
+                if (data.cvr < 0.5 && cpmDrop < -0.2 && cpatc > benchmarkCpatc) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '稳定期-CVR',
+                        title: '虚假繁荣 (Cheap & Useless)',
+                        desc: `CPM 环比跌 ${(cpmDrop * 100).toFixed(1)}%，加购成本高`,
+                        diagnosis: '垃圾流量涌入 (Display/App)。',
+                        action: '1. 版位清洗 (排除 App); 2. 检查 Final URL Expansion。'
+                    });
+                }
+
+                // CVR 异常 - 全面崩盘
+                if (data.cvr < 0.5 && data.ctr < 0.5 && cpatc > benchmarkCpatc) {
+                    issues.push({
+                        level: 'CRITICAL',
+                        module: '稳定期-CVR',
+                        title: '全面崩盘 (No Click, No Buy)',
+                        desc: `CTR: ${data.ctr.toFixed(2)}%, CVR: ${data.cvr.toFixed(2)}%`,
+                        diagnosis: '素材与受众严重错配。',
+                        action: '1. 替换最差素材; 2. 暂停宽泛 Interests，改用 Search Themes。'
+                    });
+                }
+
+                // CVR 异常 - 临门一脚 (Good Traffic, Bad Offer)
+                const cpmStable = Math.abs(cpmChange) < 0.1; // CPM 变化小于 10%
+                const goodAtcCost = cpatc < benchmarkCpatc;
+                const badIcCost = cpic > benchmarkCpic;
+
+                if (data.cvr < 0.5 && cpmStable && goodAtcCost && badIcCost) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '稳定期-CVR',
+                        title: '临门一脚 (Good Traffic, Bad Offer)',
+                        desc: `流量质量正常(CPATC: $${cpatc.toFixed(2)}), 但结账成本高(CPIC: $${cpic.toFixed(2)})`,
+                        diagnosis: '"人"是对的，"货/场"有问题。流量质量没变(加购成本健康)，但页面承接能力或价格策略失效，导致用户在最后环节流失。',
+                        action: '1. [Inventory] 核心爆款是否断货或断码? 2. [Competition] 检查竞品是否正在降价? 3. [Tech] 检查落地页/结账页加载速度，或是否有遮挡转化的弹窗。',
+                        triggerConditions: [
+                            {
+                                label: 'CVR < 0.5%',
+                                actual: data.cvr,
+                                threshold: 0.5,
+                                operator: '<',
+                                passed: true,
+                                format: 'percentage'
+                            },
+                            {
+                                label: 'CPM 变化 < 10%',
+                                actual: Math.abs(cpmChange * 100),
+                                threshold: 10,
+                                operator: '<',
+                                passed: cpmStable,
+                                format: 'percentage'
+                            },
+                            {
+                                label: 'CPATC < Benchmark',
+                                actual: cpatc,
+                                threshold: benchmarkCpatc,
+                                operator: '<',
+                                passed: goodAtcCost,
+                                format: 'currency'
+                            },
+                            {
+                                label: 'CPIC > Benchmark',
+                                actual: cpic,
+                                threshold: benchmarkCpic,
+                                operator: '>',
+                                passed: badIcCost,
+                                format: 'currency'
+                            }
+                        ],
+                        decisionPath: '稳定期 → CVR异常检测 → 临门一脚'
+                    });
+                }
+
+                // CPM 下降诊断 (流量降级风险)
+                const yesterdayCpm = data.prevCpm;
+                const dayBeforeCpm = data.dayBeforeYesterdayCpm;
+                const cpmDropVsDayBefore = calculateChange(yesterdayCpm, dayBeforeCpm);
+                const impressionChange = calculateChange(cleanNumber(today['Impr.']), data.dayBeforeYesterdayImpressions);
+
+                if (cpmDropVsDayBefore < -0.2 && impressionChange > 0.2 && data.conversions === 0) {
+                    issues.push({
+                        level: 'HIGH',
+                        module: '稳定期-版位',
+                        title: 'CPM 下降 + 流量降级风险',
+                        desc: `CPM 环比跌 ${Math.abs(cpmDropVsDayBefore * 100).toFixed(0)}%, 展示量涨 ${(impressionChange * 100).toFixed(0)}%, 但 0 转化`,
+                        diagnosis: '机器可能放弃了昂贵的 Search/Shopping 竞价，转而大量填充 Display (展示网络) 或 Mobile App 的低价库存。这通常伴随着 CTR 的虚高(误触)和 CVR 的暴跌。',
+                        action: '1. [Placement Check] 检查 Placement Report，如果跑到了 Display、Video 版位为主(App 类版位、不相关的 Youtube 频道版位 或 匿名/游戏类网站)，立即执行排除脚本。'
+                    });
+                }
+
+                // CPM 上涨分析
+                if (cpmChange > 0.1) { // CPM 上涨超过 10%
+                    // CPM 上涨 + CVR 上涨 (良性)
+                    if (cvrChange > 0) {
+                        issues.push({
+                            level: 'GOOD',
+                            module: '稳定期-CPM',
+                            title: 'CPM 上涨 (良性/品牌词吸血)',
+                            desc: `CPM 涨 ${(cpmChange * 100).toFixed(0)}%, CVR 也提升 ${(cvrChange * 100).toFixed(0)}%`,
+                            diagnosis: '流量变贵但更精准。建议检查 Search Terms 中品牌词消耗占比，若 > 20% 说明 PMax 在抢 Brand Search 流量。',
+                            action: '若品牌词占比 > 20%: 建议添加 Brand Exclusion List; 若 < 20%: 无需干预。'
+                        });
+                    } else if (cvrChange < -0.1) {
+                        // CPM 上涨 + CVR 下降 (竞争加剧)
+                        issues.push({
+                            level: 'HIGH',
+                            module: '稳定期-CPM',
+                            title: 'CPM 上涨 + 竞争加剧',
+                            desc: `CPM 涨 ${(cpmChange * 100).toFixed(0)}%, 但 CVR 跌 ${Math.abs(cvrChange * 100).toFixed(0)}%`,
+                            diagnosis: '竞争加剧且处于劣势。流量变贵但转化反而下降。',
+                            action: '1. 检查 Auction Insights，若过去七天竞对 Impression Share 上升，说明被竞对抢占; 2. 需优化素材差异化，或避开红海词。'
+                        });
+                    }
+                }
+            }
+
+            // === 模块三：ROI 深度诊断 ===
+
+            // 学习期 - 零转化风险 (漏斗堵塞)
+            if (isLearning && data.cost > 2 * config.targetCpa && data.conversions === 0 && data.age >= 2) {
+                const hasIc = data.ic > 0;
+                issues.push({
+                    level: 'CRITICAL',
+                    module: 'ROI诊断-学习期',
+                    title: '零转化风险 (Zero Conversion)',
+                    desc: `消耗 $${data.cost.toFixed(2)} (>$${config.targetCpa * 2}) 且 0 转化`,
+                    diagnosis: '流量已经引入，但卡在了最后一步。在排除了技术/追踪故障的前提下，大概率是价格/促销策略导致用户决策失败。',
+                    action: hasIc ?
+                        '1. [Price Check] 有结账意向但不转化，检查价格是否对比折扣期贵了，或优惠券已过期; 2. 建议增加挽留弹窗或 EDM 追单。' :
+                        '1. [Price/Trust] 完全无结账，用户连尝试结账的动力都没有; 2. 自动抓取 GMC 中 Top Spend SKU 的 Price Competitiveness，若显示 "High" 则建议调整售价或开启促销。',
+                    triggerConditions: [
+                        {
+                            label: 'Cost > Target CPA × 2',
+                            actual: data.cost,
+                            threshold: config.targetCpa * 2,
+                            operator: '>',
+                            passed: true,
+                            format: 'currency'
+                        },
+                        {
+                            label: '转化数 = 0',
+                            actual: data.conversions,
+                            threshold: 0,
+                            operator: '=',
+                            passed: true,
+                            format: 'number'
+                        },
+                        {
+                            label: '广告系列年龄 ≥ 2天',
+                            actual: data.age,
+                            threshold: 2,
+                            operator: '≥',
+                            passed: true,
+                            format: 'number'
+                        }
+                    ],
+                    decisionPath: '学习期 → ROI检测 → 零转化风险 → ' + (hasIc ? '有IC无Purchase' : '完全无交互')
+                });
+            }
+
+            // 学习期 - 转化成本极高 (Extreme CPA)
+            if (isLearning && data.cpa > 3 * config.targetCpa && data.conversions > 0) {
+                issues.push({
+                    level: 'CRITICAL',
+                    module: 'ROI诊断-学习期',
+                    title: '转化成本极高 (Extreme CPA)',
+                    desc: `CPA $${data.cpa.toFixed(2)} 是目标的 ${(data.cpa / config.targetCpa).toFixed(1)} 倍`,
+                    diagnosis: '虽然出单了，但这一单的成本是目标的 3 倍，这买卖做不下去。机器在极其错误的人群或版位上浪费了太多预算。',
+                    action: '1. [Stop Loss] 面对 3 倍 CPA 的学习期模型，修补的成本往往高于重建。建议暂停该 Campaign，复制它，更换更窄的受众信号(如仅使用具体型号的 Search Themes，去掉宽泛兴趣)后重启; 2. 检查是否开启了 Final URL Expansion 且流量跑向了无关页面(Blog/Policy)。',
+                    triggerConditions: [
+                        {
+                            label: 'CPA > Target CPA × 3',
+                            actual: data.cpa,
+                            threshold: config.targetCpa * 3,
+                            operator: '>',
+                            passed: true,
+                            format: 'currency'
+                        },
+                        {
+                            label: '转化数 > 0',
+                            actual: data.conversions,
+                            threshold: 0,
+                            operator: '>',
+                            passed: true,
+                            format: 'number'
+                        }
+                    ],
+                    decisionPath: '学习期 → ROI检测 → 极高CPA熔断'
+                });
+            }
+
+            // 稳定期 - 零转化 (Dead Campaign)
+            if (!isLearning && data.conversions === 0 && data.yesterdayConversions === 0 && data.cost > 600) {
+                issues.push({
+                    level: 'CRITICAL',
+                    module: 'ROI诊断-稳定期',
+                    title: '零转化 (Dead Campaign)',
+                    desc: `连续 2 天 0 转化，累计消耗 $${data.cost.toFixed(2)}`,
+                    diagnosis: '模型"死锁"。可能是受众池枯竭(该买的都买了)、产品生命周期结束，或者机器陷入了错误的流量探索死胡同。',
+                    action: '1. [Reboot] 建议暂停 Campaign，复制新建。PMax 有时需要"重启"来清除错误的机器学习缓存; 2. [New Blood] 新 Campaign 必须使用全新的素材和全新的受众信号(例如:从兴趣标签改为竞品网址定向)。',
+                    triggerConditions: [
+                        {
+                            label: '今天转化 = 0',
+                            actual: data.conversions,
+                            threshold: 0,
+                            operator: '=',
+                            passed: true,
+                            format: 'number'
+                        },
+                        {
+                            label: '昨天转化 = 0',
+                            actual: data.yesterdayConversions,
+                            threshold: 0,
+                            operator: '=',
+                            passed: true,
+                            format: 'number'
+                        },
+                        {
+                            label: '累计消耗 > $600',
+                            actual: data.cost,
+                            threshold: 600,
+                            operator: '>',
+                            passed: true,
+                            format: 'currency'
+                        }
+                    ],
+                    decisionPath: '稳定期 → ROI检测 → 模型死锁'
+                });
+            }
+
+            // 配件陷阱 (学习期和稳定期通用)
+            if (data.conversions > 2 && data.aov < (config.targetAov / 2)) {
+                issues.push({
+                    level: 'HIGH',
+                    module: 'ROI诊断',
+                    title: '配件陷阱 (Low AOV)',
+                    desc: `AOV $${data.aov.toFixed(2)} 远低于目标 $${config.targetAov}`,
+                    diagnosis: '机器觉得卖一个 $50 的配件和一个 $2500 的电源是一样的"1个转化"，自然会去推更容易成交的低价品。',
+                    action: '1. [Strategy] 将出价策略改为 "Maximize Conversion Value"; 2. [Inventory] 在 Listing Group 中排除低价 SKU; 3. [Audience] 增加"高客单价意图"的 Search Themes，移除包含配件的词; 4. [Negative] 检查 Search Terms，将配件相关词加入否定列表。'
+                });
+            }
+
+            // 稳定期 - CPA 正常但 AOV 过低
+            if (!isLearning && data.cpa < config.targetCpa && data.aov < (config.targetAov * 0.7) && data.roas < config.targetRoas) {
+                issues.push({
+                    level: 'HIGH',
+                    module: 'ROI诊断-稳定期',
+                    title: 'CPA 正常但 AOV 过低',
+                    desc: `CPA $${data.cpa.toFixed(2)} 达标，但 AOV $${data.aov.toFixed(2)} 仅为目标的 ${((data.aov / config.targetAov) * 100).toFixed(0)}%`,
+                    diagnosis: '卖得太便宜。机器为了凑转化数量，拼命推好卖的低价配件/引流款，导致虽然出单了，但总 GMV 上不去。',
+                    action: '1. [策略修正] 确认出价策略是否严格执行 Maximize Conversion Value; 2. [物理隔离] 在 Listing Group 中将价格低于 AOV×0.7 的 SKU 设为 Exclude; 3. [信号引导] 在 Search Themes 中移除配件词，只保留型号词。'
+                });
+            }
+
+            // ROI 不达标
+            if (data.roas < config.targetRoas && data.cost > 50) {
+                issues.push({
+                    level: 'HIGH',
+                    module: 'ROI诊断',
+                    title: 'ROI 不达标',
+                    desc: `ROAS ${data.roas.toFixed(2)} < Target ${config.targetRoas}`,
+                    diagnosis: '账户混入低效 SKU 或素材。',
+                    action: '排除低效 SKU (Cost 高 ROAS 低)，否定无关搜索词。'
+                });
+            }
+
+            // 版位跑偏 (稳定期)
+            if (!isLearning && data.displayVideoCostShare > 60) {
+                issues.push({
+                    level: 'HIGH',
+                    module: '版位诊断',
+                    title: '版位跑偏风险',
+                    desc: `Display/Video 占比 ${data.displayVideoCostShare.toFixed(1)}%`,
+                    diagnosis: '视频/展示版位消耗过高，通常转化较差。',
+                    action: '上传更"硬"的产品视频，或排除低效素材。'
+                });
+            }
+
+            return { data, issues };
+        }
+
+        function calculateAge(row) {
+            const campaignName = row['Campaign'] || '';
+            const match = campaignName.match(/(\d{8})/);
+            if (match) {
+                const startStr = match[1];
+                const startDate = new Date(`${startStr.substring(0, 4)}-${startStr.substring(4, 6)}-${startStr.substring(6, 8)}`);
+                const currDate = parseDate(row['Day']);
+                const diffTime = Math.abs(currDate - startDate);
+                return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
+            return 7; // 默认假设稳定期
+        }
+
+        // ============================================
+        // 数据处理
+        // ============================================
+        function processData(csvText) {
+            const rawData = parseCSV(csvText);
+            if (rawData.length === 0) {
+                alert('无法解析 CSV 文件，请检查格式。');
+                return;
+            }
+
+            // 按 Campaign 分组
+            const groups = {};
+            rawData.forEach(row => {
+                const name = row['Campaign'];
+                if (!groups[name]) groups[name] = [];
+                groups[name].push(row);
+            });
+
+            // 保存到全局变量
+            globalCampaignData = {};
+
+            // 分析每个 Campaign
+            const results = Object.keys(groups).map(campaignName => {
+                // 按日期倒序排列
+                const sortedRows = groups[campaignName].sort((a, b) => {
+                    return parseDate(b['Day']) - parseDate(a['Day']);
+                });
+
+                // 保存已排序的数据
+                globalCampaignData[campaignName] = sortedRows;
+
+                return analyzeCampaign(sortedRows);
+            });
+
+            // 启用重新诊断按钮
+            document.getElementById('reanalyzeBtn').disabled = false;
+
+            renderResults(results);
+        }
+
+        // ============================================
+        // UI 渲染
+        // ============================================
+        function renderResults(results) {
+            const content = document.getElementById('content');
+
+            // 统计问题数量
+            let criticalCount = 0, highCount = 0, mediumCount = 0, goodCount = 0;
+            results.forEach(r => {
+                r.issues.forEach(i => {
+                    if (i.level === 'CRITICAL') criticalCount++;
+                    else if (i.level === 'HIGH') highCount++;
+                    else if (i.level === 'MEDIUM') mediumCount++;
+                    else if (i.level === 'GOOD') goodCount++;
+                });
+            });
+
+            let html = `
+        <div class="report-header">
+          <div>
+            <h2 class="report-title">诊断报告</h2>
+            <p class="report-meta">检测到 ${results.length} 个广告系列，基准日期：${results[0]?.data?.date || '-'}</p>
+          </div>
+          <div class="badge-group">
+            ${criticalCount > 0 ? `<span class="badge badge-critical">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              Critical: ${criticalCount}
+            </span>` : ''}
+            ${highCount > 0 ? `<span class="badge badge-high">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              High: ${highCount}
+            </span>` : ''}
+            ${mediumCount > 0 ? `<span class="badge badge-medium">Medium: ${mediumCount}</span>` : ''}
+            ${goodCount > 0 ? `<span class="badge badge-good">Good: ${goodCount}</span>` : ''}
+          </div>
+        </div>
+      `;
+
+            results.forEach((result, idx) => {
+                const { data, issues } = result;
+                if (!data.name) return;
+
+                const roasColor = data.roas >= config.targetRoas ? 'metric-good' : 'metric-danger';
+                const cpaColor = data.cpa <= config.targetCpa ? 'metric-good' : (data.cpa <= config.targetCpa * 1.5 ? 'metric-warning' : 'metric-danger');
+
+                html += `
+          <div class="campaign-card">
+            <div class="campaign-header">
+              <div class="campaign-name">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                ${data.name}
+                <span class="campaign-age">${data.age <= 3 ? '🔄 学习期' : '✅ 稳定期'} Day ${data.age}</span>
+              </div>
+              <div class="campaign-metrics">
+                <div class="metric-item">
+                  <div class="metric-value ${roasColor}">${data.roas.toFixed(2)}</div>
+                  <div class="metric-label">ROAS</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value ${cpaColor}">$${data.cpa.toFixed(0)}</div>
+                  <div class="metric-label">CPA</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value">$${data.cost.toFixed(0)}</div>
+                  <div class="metric-label">Cost</div>
+                </div>
+                <div class="metric-item">
+                  <div class="metric-value">${data.conversions}</div>
+                  <div class="metric-label">Conv</div>
+                </div>
+              </div>
+            </div>
+            <div class="campaign-body">
+              ${issues.length > 0 ? `
+                <div class="issues-list">
+                  ${issues.map(issue => `
+                    <div class="issue-item issue-${issue.level.toLowerCase()}">
+                      <div class="issue-header">
+                        <span class="issue-module">${issue.module}</span>
+                        <span class="badge badge-${issue.level.toLowerCase()}">${issue.level}</span>
+                      </div>
+                      <div class="issue-title">${issue.title}</div>
+                      <div class="issue-desc">${issue.desc}</div>
+                      <div class="issue-diagnosis">💡 ${issue.diagnosis}</div>
+                      <div class="issue-action">
+                        <svg class="issue-action-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="9 11 12 14 22 4"></polyline>
+                          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        </svg>
+                        <span>${issue.action}</span>
+                      </div>
+                      ${renderTriggerSection(issue)}
+                    </div>
+                  `).join('')}
+                </div>
+              ` : `
+                <div class="no-issues">
+                  <svg class="no-issues-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  <p class="no-issues-text">表现正常，无需干预</p>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+            });
+
+            content.innerHTML = html;
+        }
+
+        // ============================================
+        // 文件上传处理
+        // ============================================
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    processData(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // 拖拽上传
+        const uploadArea = document.getElementById('uploadArea');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.csv')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    processData(ev.target.result);
+                };
+                reader.readAsText(file);
+            } else {
+                alert('请上传 CSV 格式文件');
+            }
+        });
+
+        // ============================================
+        // 演示数据
+        // ============================================
+        // ============================================
+        // 演示数据
+        // ============================================
+        function loadDemoData() {
+            const csv = `Campaign,Day,Budget,Cost,Impr.,Clicks,CPM,CTR,CPC,ATC,CPATC,IC,CPIC,Purchase,CPA,销售额,ROI,CVR,AOV,Impression Share,Conversion Actions,Conversion volume,GMC Status,Policy Review Status,Asset Approval Status,Product Disapproval Rate,版位跑偏诊断（cost：display+video占比）,Video版位花费占比
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/5,144,$167.08 ,"11,533",120,$14.49 ,1.04%,$1.39 ,5,$31.28 ,1,$215.34 ,0,$732.90 ,$561.18 ,3.95,0.08%,"$3,142.28 ",<10,Active,274.83,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,1.57%,0.15%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/6,144,$178.60 ,"7,734",105,$23.09 ,1.36%,$1.70 ,0,$0.00 ,1,$67.58 ,1,$67.58 ,"$3,099.00 ",45.85,0.56%,"$3,099.00 ",<10,Active,183.8,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,2.97%,0.00%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/7,144,$176.04 ,"10,977",97,$16.04 ,0.88%,$1.81 ,2,$88.02 ,0,$0.00 ,1,$176.04 ,$799.00 ,4.54,0.53%,$799.00 ,<10,Active,337.67,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,0.44%,0.06%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/8,144,$142.09 ,"9,728",94,$14.61 ,0.97%,$1.51 ,3,$55.36 ,0,$354.56 ,0,$0.00 ,$0.00 ,0,0%,$0.00 ,<10,Active,363.21,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,0.34%,0.00%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/9,144,$100.70 ,"9,321",77,$10.80 ,0.83%,$1.31 ,11,$14.31 ,0,$0.00 ,0,$0.00 ,$0.00 ,0,0%,$0.00 ,<10,Active,281.17,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,1.57%,0.81%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/10,144,$157.45 ,"4,441",76,$35.45 ,1.71%,$2.07 ,0,$0.00 ,0,$0.00 ,0,$0.00 ,$0.00 ,0,0%,$0.00 ,<10,Active,329.6,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,1.44%,0.75%
+US-20251210-Google-CV-PMax-Purchase-MaxConv-HighIndex-3600Plus-Event-Mix-GOC,2026/1/11,144,$67.58 ,"8,034",64,$8.41 ,0.80%,$1.06 ,0,$302.09 ,1,$100.70 ,0,$0.00 ,$0.00 ,0,0%,$0.00 ,<10,Active,199.09,Linked,账户目前不涉及policy issues所以这一栏都是空的,7×paused，2×eligible,97.60%,1.75%,0.33%`;
+
+            processData(csv);
+        }
+
+        // 初始化配置
+        updateConfig();
+    </script>
+</body>
+
+</html>
