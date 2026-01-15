@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url=pmax-analyzer.html">
+    <title>Pmax 智能诊断专家 Pro - 重定向中...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .spinner {
+            margin: 2rem auto;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        a {
+            color: white;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🚀 Pmax 智能诊断专家 Pro</h1>
+        <div class="spinner"></div>
+        <p>正在跳转到主工具...</p>
+        <p style="margin-top: 2rem; font-size: 0.9rem;">
+            如果没有自动跳转，请点击 <a href="pmax-analyzer.html">这里</a>
+        </p>
+    </div>
+    <script>
+        // 备用跳转逻辑，确保在 meta refresh 失败时也能跳转
+        setTimeout(function () {
+            window.location.href = 'pmax-analyzer.html';
+        }, 100);
+    </script>
+</body>
+
+</html>
