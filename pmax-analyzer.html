@@ -1145,7 +1145,7 @@
             const data = {
                 name: today['Campaign'] || 'Unknown',
                 date: today['Day'],
-                age: calculateAge(today),
+                age: historyData.length,  // 使用实际数据天数
                 cost: totalCost,  // 使用汇总值
                 budget: cleanNumber(today['Budget']),
                 clicks: totalClicks,  // 使用汇总值
