@@ -1221,47 +1221,158 @@
                 // === 学习期 (0-3天) ===
 
                 // 场景 A: 消耗过热
-                if (data.cost > data.budget * 1.2) {
+                const overSpendRatio = data.cost / data.budget;
+                
+                if (overSpendRatio > 1.2) {
+                    // 场景 A1: 超预算 >20% 且效果佳
                     if (data.roas > config.targetRoas && data.cpa < config.targetCpa) {
                         issues.push({
                             level: 'GOOD',
                             module: '学习期-预算',
-                            title: '消耗过热 - 良性',
-                            desc: `超预算 ${((data.cost / data.budget - 1) * 100).toFixed(0)}% 但效果佳`,
-                            diagnosis: '激进探索中，ROAS 和 CPA 均达标。',
-                            action: '不干预或加预算，让机器继续学习。'
+                            title: '消耗过热 - 利好信号',
+                            desc: `超预算 ${((overSpendRatio - 1) * 100).toFixed(0)}%，ROAS: ${data.roas.toFixed(2)}, CPA: $${data.cpa.toFixed(2)}`,
+                            diagnosis: '系统激进探索且效果佳。ROAS 和 CPA 均达标，说明机器找到了高质量流量。',
+                            action: '利好信号。建议不干预或与客户沟通适当增加预算乘胜追击，让机器继续学习优质转化路径。',
+                            triggerConditions: [
+                                {
+                                    label: 'Cost > Budget × 1.2',
+                                    actual: data.cost,
+                                    threshold: data.budget * 1.2,
+                                    operator: '>',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'ROAS > Target ROAS',
+                                    actual: data.roas,
+                                    threshold: config.targetRoas,
+                                    operator: '>',
+                                    passed: true,
+                                    format: 'number'
+                                },
+                                {
+                                    label: 'CPA < Target CPA',
+                                    actual: data.cpa,
+                                    threshold: config.targetCpa,
+                                    operator: '<',
+                                    passed: true,
+                                    format: 'currency'
+                                }
+                            ],
+                            decisionPath: '学习期 → 消耗过热 (>20%) → 效果佳 → 利好信号'
                         });
                     } else {
+                        // 场景 A2: 超预算 >20% 但效果不佳
                         issues.push({
                             level: 'MEDIUM',
                             module: '学习期-预算',
                             title: '消耗过热 - 需观察',
-                            desc: `超预算 >20%，Cost: $${data.cost.toFixed(2)}`,
-                            diagnosis: '正常波动，等待学习完成。',
-                            action: '观察至第4天再决定是否干预。'
+                            desc: `超预算 ${((overSpendRatio - 1) * 100).toFixed(0)}%，Cost: $${data.cost.toFixed(2)}`,
+                            diagnosis: '正常波动，学习期系统在探索不同流量源。',
+                            action: '观察至第4天再决定是否干预。学习期波动属于正常现象。'
+                        });
+                    }
+                } else if (overSpendRatio >= 1.1 && overSpendRatio <= 1.2) {
+                    // 场景 A3: 消耗略超 (10-20%)
+                    if (cpatc > benchmarkCpatc || data.cpa > config.targetCpa) {
+                        issues.push({
+                            level: 'MEDIUM',
+                            module: '学习期-预算',
+                            title: '消耗略超 - 正常波动',
+                            desc: `超预算 ${((overSpendRatio - 1) * 100).toFixed(0)}%，CPATC: $${cpatc.toFixed(2)}, CPA: $${data.cpa.toFixed(2)}`,
+                            diagnosis: '消耗略超且加购/转化数据不佳，但属于学习期正常探索范围。',
+                            action: '正常波动。维持现状继续观察至第 4 天，让系统完成学习期探索。',
+                            triggerConditions: [
+                                {
+                                    label: 'Cost 超预算 10-20%',
+                                    actual: data.cost,
+                                    threshold: data.budget * 1.1,
+                                    operator: '>=',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'CPATC > Benchmark 或 CPA > Target',
+                                    actual: cpatc > benchmarkCpatc ? cpatc : data.cpa,
+                                    threshold: cpatc > benchmarkCpatc ? benchmarkCpatc : config.targetCpa,
+                                    operator: '>',
+                                    passed: true,
+                                    format: 'currency'
+                                }
+                            ],
+                            decisionPath: '学习期 → 消耗略超 (10-20%) → 效果一般 → 正常波动'
                         });
                     }
                 }
 
                 // 场景 B: 消耗不足
                 if (data.cost < data.budget * 0.8) {
-                    if (data.cpa < config.targetCpa) {
+                    // 场景 B1: CPA 和 CPATC 都低于目标
+                    if (data.cpa < config.targetCpa && cpatc < benchmarkCpatc) {
                         issues.push({
                             level: 'MEDIUM',
                             module: '学习期-预算',
-                            title: '消耗不足 - 保守',
-                            desc: `花不出钱且 CPA($${data.cpa.toFixed(2)}) 低于目标`,
-                            diagnosis: '出价过于保守，竞争不到流量。',
-                            action: '提预算或放宽 ROAS/CPA 限制。'
+                            title: '消耗不足 - 系统保守',
+                            desc: `消耗仅 ${((data.cost / data.budget) * 100).toFixed(0)}%，CPA: $${data.cpa.toFixed(2)}, CPATC: $${cpatc.toFixed(2)}`,
+                            diagnosis: '系统出价保守，竞争不到足够流量。虽然效果好但量不够。',
+                            action: '建议拉高 20% 预算或适当放宽 CPA/ROAS 限制以帮助系统通过"学习门槛"，获取更多转化数据。',
+                            triggerConditions: [
+                                {
+                                    label: 'Cost < Budget × 0.8',
+                                    actual: data.cost,
+                                    threshold: data.budget * 0.8,
+                                    operator: '<',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'CPA < Target CPA',
+                                    actual: data.cpa,
+                                    threshold: config.targetCpa,
+                                    operator: '<',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'CPATC < Benchmark CPATC',
+                                    actual: cpatc,
+                                    threshold: benchmarkCpatc,
+                                    operator: '<',
+                                    passed: true,
+                                    format: 'currency'
+                                }
+                            ],
+                            decisionPath: '学习期 → 消耗不足 → CPA & CPATC 达标 → 系统保守'
                         });
                     } else {
+                        // 场景 B2: 表现低于 Benchmark
+                        const isTCPA = config.targetCpa > 0; // 简化判断，实际可从配置读取
                         issues.push({
                             level: 'MEDIUM',
                             module: '学习期-预算',
                             title: '消耗不足 - 竞争力差',
-                            desc: '花不出钱且效果差',
-                            diagnosis: '竞争力不足，可能目标设定过于激进。',
-                            action: '降低 tROAS 目标 (如 4.0 → 3.5)。'
+                            desc: `消耗仅 ${((data.cost / data.budget) * 100).toFixed(0)}%，CPA: $${data.cpa.toFixed(2)} (目标: $${config.targetCpa.toFixed(2)})`,
+                            diagnosis: '竞争力不足，可能目标设定过于激进，导致系统无法获取足够流量。',
+                            action: `维持预算不动，调整出价策略：\n${isTCPA ? '• 若为 tCPA：适当提高 tCPA 目标（如提升 15-20%）' : ''}\n• 若为 tROAS：建议降低 tROAS 目标 (如 4.0 → 3.5) 以获取更多流量`,
+                            triggerConditions: [
+                                {
+                                    label: 'Cost < Budget × 0.8',
+                                    actual: data.cost,
+                                    threshold: data.budget * 0.8,
+                                    operator: '<',
+                                    passed: true,
+                                    format: 'currency'
+                                },
+                                {
+                                    label: 'CPA > Target 或 CPATC > Benchmark',
+                                    actual: data.cpa > config.targetCpa ? data.cpa : cpatc,
+                                    threshold: data.cpa > config.targetCpa ? config.targetCpa : benchmarkCpatc,
+                                    operator: '>',
+                                    passed: true,
+                                    format: 'currency'
+                                }
+                            ],
+                            decisionPath: '学习期 → 消耗不足 → 表现低于 Benchmark → 竞争力差'
                         });
                     }
                 }
