@@ -107,7 +107,7 @@
             margin: 0 auto;
             padding: 32px;
             display: grid;
-            grid-template-columns: 320px 1fr;
+            grid-template-columns: 320px minmax(0, 1fr);
             gap: 32px;
         }
 
@@ -408,6 +408,7 @@
 
         .campaign-body {
             padding: 24px;
+            overflow: hidden;
         }
 
         /* Issues List */
@@ -754,6 +755,172 @@
             font-weight: 600;
             flex: 1;
         }
+
+        /* Daily Data Section */
+        .daily-data-section {
+            margin-top: 16px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .daily-toggle-btn {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--accent-primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .daily-toggle-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .daily-toggle-btn .chevron-icon {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.2s;
+        }
+
+        .daily-toggle-btn.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .daily-data-table {
+            display: none;
+            margin-top: 12px;
+            width: 100%;
+            max-height: 400px;
+            overflow-x: auto;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-out;
+            border-radius: 8px;
+        }
+
+        .daily-data-table.show {
+            display: block;
+        }
+
+        .daily-data-table table {
+            width: max-content;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .daily-data-table thead {
+            background: rgba(99, 102, 241, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .daily-data-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .daily-data-table td {
+            padding: 10px 12px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .daily-data-table tbody tr {
+            transition: background 0.2s;
+        }
+
+        .daily-data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .daily-data-table .metric-cell {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            font-weight: 600;
+        }
+
+        .daily-data-table .date-cell {
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .daily-data-table .positive {
+            color: var(--success);
+        }
+
+        .daily-data-table .negative {
+            color: var(--danger);
+        }
+
+        .daily-data-table .neutral {
+            color: var(--text-muted);
+        }
+
+        /* 固定首列（日期列） */
+        .daily-data-table th:first-child,
+        .daily-data-table td:first-child {
+            position: sticky;
+            left: 0;
+            background: rgba(30, 41, 59, 0.98);
+            z-index: 2;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .daily-data-table thead th:first-child {
+            background: rgba(99, 102, 241, 0.25);
+            z-index: 11;
+        }
+
+        /* 列宽优化 */
+        .daily-data-table th,
+        .daily-data-table td {
+            min-width: 85px;
+            white-space: nowrap;
+        }
+
+        .daily-data-table th:first-child,
+        .daily-data-table td:first-child {
+            min-width: 95px;
+        }
+
+        /* 滚动条样式优化 */
+        .daily-data-table::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .daily-data-table::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .daily-data-table::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 4px;
+        }
+
+        .daily-data-table::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
     </style>
 
 </head>
@@ -1016,6 +1183,34 @@
             }
         }
 
+        // 切换按天数据显示
+        function toggleDailyData(button) {
+            const table = button.nextElementSibling;
+            const isExpanded = table.classList.contains('show');
+
+            if (isExpanded) {
+                table.classList.remove('show');
+                button.classList.remove('expanded');
+                button.innerHTML = `
+                    <svg class=\"chevron-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">
+                        <polyline points=\"6 9 12 15 18 9\"></polyline>
+                    </svg>
+                    展开按天数据 (${button.dataset.days || ''} 天)
+                `;
+            } else {
+                table.classList.add('show');
+                button.classList.add('expanded');
+                const dayCount = table.querySelectorAll('tbody tr').length;
+                button.dataset.days = dayCount;
+                button.innerHTML = `
+                    <svg class=\"chevron-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\">
+                        <polyline points=\"6 9 12 15 18 9\"></polyline>
+                    </svg>
+                    收起按天数据
+                `;
+            }
+        }
+
         // 格式化数值
         function formatValue(value, format) {
             if (value === null || value === undefined) return 'N/A';
@@ -1222,7 +1417,7 @@
 
                 // 场景 A: 消耗过热
                 const overSpendRatio = data.cost / data.budget;
-                
+
                 if (overSpendRatio > 1.2) {
                     // 场景 A1: 超预算 >20% 且效果佳
                     if (data.roas > config.targetRoas && data.cpa < config.targetCpa) {
@@ -1837,7 +2032,43 @@
                 });
             }
 
-            return { data, issues };
+            // 构建每天的数据数组（用于按天展示）
+            const dailyData = historyData.map(row => {
+                const dayCost = cleanNumber(row['Cost']);
+                const dayBudget = cleanNumber(row['Budget']);
+                const dayConversions = cleanNumber(row['Purchase']);
+                const dayConvValue = cleanNumber(row['销售额']);
+                const dayClicks = cleanNumber(row['Clicks']);
+                const dayImpressions = cleanNumber(row['Impr.']);
+                const dayAtc = cleanNumber(row['ATC']);
+                const dayIc = cleanNumber(row['IC']);
+
+                return {
+                    date: row['Day'] || '-',
+                    budget: dayBudget,
+                    cost: dayCost,
+                    budgetUsage: dayBudget > 0 ? (dayCost / dayBudget) * 100 : 0,
+                    impressions: dayImpressions,
+                    clicks: dayClicks,
+                    cpm: cleanNumber(row['CPM']),
+                    cpc: cleanNumber(row['CPC']),
+                    ctr: dayImpressions > 0 ? (dayClicks / dayImpressions) * 100 : 0,
+                    atc: dayAtc,
+                    cpatc: dayAtc > 0 ? dayCost / dayAtc : 0,
+                    ic: dayIc,
+                    cpic: dayIc > 0 ? dayCost / dayIc : 0,
+                    conversions: dayConversions,
+                    cvr: dayClicks > 0 ? (dayConversions / dayClicks) * 100 : 0,
+                    cpa: dayConversions > 0 ? dayCost / dayConversions : 0,
+                    convValue: dayConvValue,
+                    aov: dayConversions > 0 ? dayConvValue / dayConversions : 0,
+                    roas: dayCost > 0 ? dayConvValue / dayCost : 0,
+                    roi: cleanNumber(row['ROI']),
+                    impressionShare: cleanNumber(row['Impression Share'])
+                };
+            });
+
+            return { data, issues, dailyData };
         }
 
         function calculateAge(row) {
@@ -1940,7 +2171,7 @@
       `;
 
             results.forEach((result, idx) => {
-                const { data, issues } = result;
+                const { data, issues, dailyData } = result;
                 if (!data.name) return;
 
                 const roasColor = data.roas >= config.targetRoas ? 'metric-good' : 'metric-danger';
@@ -2009,6 +2240,78 @@
                   <p class="no-issues-text">表现正常，无需干预</p>
                 </div>
               `}
+              
+              ${dailyData && dailyData.length > 0 ? `
+                <div class="daily-data-section">
+                  <button class="daily-toggle-btn" onclick="toggleDailyData(this)">
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    展开按天数据 (${dailyData.length} 天)
+                  </button>
+                  <div class="daily-data-table">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>日期</th>
+                          <th>预算</th>
+                          <th>消耗</th>
+                          <th>消耗率</th>
+                          <th>展示数</th>
+                          <th>点击数</th>
+                          <th>CPM</th>
+                          <th>CPC</th>
+                          <th>CTR</th>
+                          <th>ATC</th>
+                          <th>CPATC</th>
+                          <th>IC</th>
+                          <th>CPIC</th>
+                          <th>转化数</th>
+                          <th>CVR</th>
+                          <th>CPA</th>
+                          <th>销售额</th>
+                          <th>AOV</th>
+                          <th>ROAS</th>
+                          <th>ROI</th>
+                          <th>展示份额</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${dailyData.map(day => {
+                    const roasClass = day.roas >= config.targetRoas ? 'positive' : (day.roas > 0 ? 'neutral' : 'negative');
+                    const cpaClass = day.conversions > 0 && day.cpa <= config.targetCpa ? 'positive' : (day.conversions > 0 ? 'neutral' : 'negative');
+                    const budgetClass = day.budgetUsage > 100 ? 'negative' : (day.budgetUsage > 80 ? 'neutral' : 'positive');
+                    return `
+                            <tr>
+                              <td class="date-cell">${day.date}</td>
+                              <td class="metric-cell">$${day.budget.toFixed(2)}</td>
+                              <td class="metric-cell">$${day.cost.toFixed(2)}</td>
+                              <td class="metric-cell ${budgetClass}">${day.budgetUsage.toFixed(0)}%</td>
+                              <td class="metric-cell">${day.impressions.toLocaleString()}</td>
+                              <td class="metric-cell">${day.clicks}</td>
+                              <td class="metric-cell">$${day.cpm.toFixed(2)}</td>
+                              <td class="metric-cell">$${day.cpc.toFixed(2)}</td>
+                              <td class="metric-cell">${day.ctr.toFixed(2)}%</td>
+                              <td class="metric-cell">${day.atc}</td>
+                              <td class="metric-cell">${day.atc > 0 ? '$' + day.cpatc.toFixed(2) : '-'}</td>
+                              <td class="metric-cell">${day.ic}</td>
+                              <td class="metric-cell">${day.ic > 0 ? '$' + day.cpic.toFixed(2) : '-'}</td>
+                              <td class="metric-cell">${day.conversions}</td>
+                              <td class="metric-cell">${day.cvr.toFixed(2)}%</td>
+                              <td class="metric-cell ${cpaClass}">${day.conversions > 0 ? '$' + day.cpa.toFixed(2) : '-'}</td>
+                              <td class="metric-cell">$${day.convValue.toFixed(2)}</td>
+                              <td class="metric-cell">${day.conversions > 0 ? '$' + day.aov.toFixed(2) : '-'}</td>
+                              <td class="metric-cell ${roasClass}">${day.roas.toFixed(2)}</td>
+                              <td class="metric-cell">${day.roi > 0 ? day.roi.toFixed(2) : '-'}</td>
+                              <td class="metric-cell">${day.impressionShare > 0 ? day.impressionShare.toFixed(1) + '%' : '-'}</td>
+                            </tr>
+                          `;
+                }).join('')}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
